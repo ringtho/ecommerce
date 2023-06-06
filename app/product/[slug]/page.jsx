@@ -1,4 +1,3 @@
-import React from 'react'
 import { client } from '@/lib/client'
 import { urlFor } from '@/lib/client'
 
@@ -15,16 +14,17 @@ const ProductDetails = async ({ params: { slug }}) => {
             <div className='image-container'>
                 <img src={urlFor(image && image[0]).url()} alt={name} />
             </div>
-            {/* <div className='small-images-container'>
+            <div className='small-images-container'>
                 {image?.map((item, index) => (
                     <img 
                         src={urlFor(item).url()}
                         alt='product'
                         className=''
-                        onMouseEnter=""
+                        onMouseEnter=''
+                        key={index}
                     />
                 ))}
-            </div> */}
+            </div>
         </div>
         <div className='product-detail-desc'>
             <h1>{name}</h1>
