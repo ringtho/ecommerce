@@ -1,4 +1,3 @@
-import styles from '../styles/globals.css'
 import { Product, FooterBanner, HeroBanner } from '../components'
 import { client } from '@/lib/client'
 
@@ -28,10 +27,12 @@ const Home = async () => {
       </div>
 
       <div className='products-container'>
-        {products?.map((product) => product.name)}
+        {products?.map((product) => (
+          <Product key={product._id} product={product} />
+        ))}
       </div>
 
-      <FooterBanner />
+      <FooterBanner footerBanner={bannerData && bannerData[0]} />
     </>
   )
 }
