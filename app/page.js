@@ -13,7 +13,6 @@ const getData = async () => {
     products,
     bannerData
   }
-
 }
 
 const Home = async () => {
