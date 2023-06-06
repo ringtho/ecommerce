@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { AiOutlineMinus, AiOutlinePlus, AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import React, { useState } from 'react'
+import { AiOutlineMinus, AiOutlinePlus, AiFillStar, AiOutlineStar } from 'react-icons/ai'
 
-import { client, urlFor } from '../../lib/client';
-import { Product } from '../../components';
+import { client, urlFor } from '../../lib/client'
+import { Product } from '../../components'
+import { useStateContext } from '../../context/stateContext'
 
 const ProductDetails = ({ product, products }) => {
-  const { image, name, details, price } = product;
-  const [index, setIndex] = useState(0);
+  const { image, name, details, price } = product
+  const [index, setIndex] = useState(0)
+  const { decQty, incQty, qty, onAdd } = useStateContext()
 
   return (
     <div>
@@ -47,13 +49,13 @@ const ProductDetails = ({ product, products }) => {
           <div className="quantity">
             <h3>Quantity:</h3>
             <p className="quantity-desc">
-              <span className="minus" onClick=''><AiOutlineMinus /></span>
-              <span className="num">0</span>
-              <span className="plus" onClick=''><AiOutlinePlus /></span>
+              <span className="minus" onClick={decQty}><AiOutlineMinus /></span>
+              <span className="num">{qty}</span>
+              <span className="plus" onClick={incQty}><AiOutlinePlus /></span>
             </p>
           </div>
           <div className="buttons">
-            <button type="button" className="add-to-cart" onClick=''>Add to Cart</button>
+            <button type="button" className="add-to-cart" onClick={() => onAdd(product, qty)}>Add to Cart</button>
             <button type="button" className="buy-now" onClick=''>Buy Now</button>
           </div>
         </div>
@@ -79,15 +81,15 @@ export const getStaticPaths = async () => {
       current
     }
   }
-  `;
+  `
 
-  const products = await client.fetch(query);
+  const products = await client.fetch(query)
 
   const paths = products.map((product) => ({
     params: { 
       slug: product.slug.current
     }
-  }));
+  }))
 
   return {
     paths,
@@ -96,13 +98,13 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async ({ params: { slug }}) => {
-  const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
+  const query = `*[_type == "product" && slug.current == '${slug}'][0]`
   const productsQuery = '*[_type == "product"]'
   
-  const product = await client.fetch(query);
-  const products = await client.fetch(productsQuery);
+  const product = await client.fetch(query)
+  const products = await client.fetch(productsQuery)
 
-  console.log(product);
+  console.log(product)
 
   return {
     props: { products, product }
