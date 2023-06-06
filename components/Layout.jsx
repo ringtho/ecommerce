@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import { Navbar } from '.'
+import { Navbar, Footer } from '.'
 
 const Layout = () => {
   return (
@@ -12,8 +12,11 @@ const Layout = () => {
         <Navbar />
       </header>
       <main className='main.container'>
-
+        Empty
       </main>
+      <footer>
+        <Footer />
+      </footer>
       
     </div>
   )
