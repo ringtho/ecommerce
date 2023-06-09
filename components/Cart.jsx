@@ -2,14 +2,42 @@ import React, { useRef } from 'react'
 import Link from 'next/link'
 import { AiOutlineMinus, AiOutlinePlus, AiOutlineLeft, AiOutlineShopping } from 'react-icons/ai'
 import { TiDeleteOutline } from 'react-icons/ti'
-import { Toast } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { useStateContext } from '@/context/stateContext'
 import { urlFor } from '@/lib/client'
+import getStripe from '@/lib/getStripe'
 
 const Cart = () => {
   const cartRef = useRef()
-  const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuantity, onRemove } = useStateContext()
+  const { 
+    totalPrice, 
+    totalQuantities,
+    cartItems, 
+    setShowCart, 
+    toggleCartItemQuantity, 
+    onRemove 
+  } = useStateContext()
+
+  const handleCheckout = async () => {
+    const stripe = await getStripe()
+
+    const response = await fetch('/api/stripe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(cartItems)
+    })
+
+    if (response.statusCode === 500 ) return
+
+    const data = await response.json()
+    toast.loading('Redirecting...')
+    stripe.redirectToCheckout({ sessionId: data.id })
+    console.log(data.id)
+  }
+
   return (
     <div className='cart-wrapper' ref={cartRef}>
       <div className='cart-container'>
@@ -51,11 +79,17 @@ const Cart = () => {
                 <div className='flex bottom'>
                   <div>
                     <p className="quantity-desc">
-                      <span className="minus" onClick={() => toggleCartItemQuantity(item._id, 'dec')}>
+                      <span 
+                        className="minus" 
+                        onClick={() => toggleCartItemQuantity(item._id, 'dec')}
+                      >
                         <AiOutlineMinus />
                       </span>
                       <span className="num">{item.quantity}</span>
-                      <span className="plus" onClick={() => toggleCartItemQuantity(item._id, 'inc')}>
+                      <span 
+                        className="plus" 
+                        onClick={() => toggleCartItemQuantity(item._id, 'inc')}
+                      >
                         <AiOutlinePlus />
                       </span>
                     </p>
@@ -84,7 +118,7 @@ const Cart = () => {
               <button 
                 type='button' 
                 className='btn'
-                onClick=''
+                onClick={handleCheckout}
               >
                 Pay with Stripe
               </button>
